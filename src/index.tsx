@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react'
+import React, { FunctionComponent, useState, useEffect } from 'react'
 import { AfazeresContainer } from './components/AfazeresContainer'
 import { render } from 'react-dom'
 import { Sidebar } from './components/Sidebar'
@@ -21,6 +21,7 @@ export interface User {
 }
 
 export interface Folder {
+  id: string
   name: string
   color: string
   afazeresContainers: AfazeresContainer[]
@@ -45,12 +46,14 @@ const sampleAfazeresContainer2: AfazeresContainer = {
 }
 
 const sampleFolder: Folder = {
+  id: '10',
   name: 'Health',
   color: 'bg-green-400',
   afazeresContainers: [sampleAfazeresContainer]
 }
 
 const sampleFolder2: Folder = {
+  id: '11',
   name: 'Tech stuff',
   color: 'bg-red-400',
   afazeresContainers: [sampleAfazeresContainer2]
@@ -62,8 +65,9 @@ const sampleUser: User = {
 }
 
 const App: FunctionComponent = () => {
-  const [user, setUser] = useState<User | null>({ username: 'kibe' })
-  const [selectedFolder, setSelectedFolder] = useState<Folder>(sampleFolder)
+  const [user, setUser] = useState<User>(sampleUser)
+  const [folders, setFolders] = useState<Folder[]>(user.folders ?? [])
+  const [selectedFolder, setSelectedFolder] = useState<Folder | null>(user.folders[0] ?? null)
 
   const handleAddAfazer = (afazer: Afazer): void => {
     console.log('added afazer!')
@@ -73,14 +77,35 @@ const App: FunctionComponent = () => {
     setSelectedFolder(folder)
   }
 
+  const handleDeleteFolder = (folder: Folder): void => {
+    const afterUpdate = (): void => {
+      console.log('after update')
+    }
+
+    setFolders((xs) => xs.filter((x) => x.id !== folder.id))
+
+    if (folder.id === selectedFolder?.id) {
+      console.log('ow!')
+      setSelectedFolder(null)
+    }
+  }
+
+  useEffect((): void => {
+    console.log(selectedFolder)
+  }, [selectedFolder])
+
   return (
     <div className='bg-gray-50 outline-none antialiased'>
       <div className='flex flex-col md:flex-row'>
-        <Sidebar folders={sampleUser.folders} onSelectFolder={handleSelectFolder} />
+        <Sidebar
+          folders={folders}
+          onSelectFolder={handleSelectFolder}
+          onDeleteFolder={handleDeleteFolder}
+        />
+
         <div className='p-4 flex-1 w-full rounded-xl shadow-sm'>
 
           <nav className='flex flex-row w-full items-center'>
-
             <div>
               <div className='py-1 px-6 rounded-md text-white text-center bg-blue-450 shadow-md font-bold'>
                 Afazeres
@@ -95,11 +120,10 @@ const App: FunctionComponent = () => {
                 <PersonIcon className='w-7 h-7' />
               </button>
             </div>
-
           </nav>
 
           <div className='flex flex-wrap flex-col items-center md:flex-row space-y-4 md:space-y-0 md:space-x-4 mt-4'>
-            {selectedFolder.afazeresContainers.map((ac) => (
+            {selectedFolder?.afazeresContainers.map((ac) => (
               <AfazeresContainer afazeres={ac.afazeres} onAddAfazer={handleAddAfazer} />
             ))}
           </div>

@@ -9,9 +9,10 @@ import { useMediaQuery } from 'react-responsive'
 interface SidebarProps {
   folders: Folder[]
   onSelectFolder: (folder: Folder) => unknown
+  onDeleteFolder: (folder: Folder) => unknown
 }
 
-export const Sidebar: FunctionComponent<SidebarProps> = ({ folders, onSelectFolder }) => {
+export const Sidebar: FunctionComponent<SidebarProps> = ({ folders, onSelectFolder, onDeleteFolder }) => {
   const isSmall = useMediaQuery({
     query: '(max-width: 768px)'
   })
@@ -47,7 +48,10 @@ export const Sidebar: FunctionComponent<SidebarProps> = ({ folders, onSelectFold
           {!isSmall && (
             <>
               <span className='font-bold text-gray-700 ml-2'>{folder.name}</span>
-              <button className='ml-auto hover:bg-red-500 hover:text-white transition-colors rounded-full'>
+              <button
+                className='ml-auto hover:bg-red-500 hover:text-white transition-colors rounded-full'
+                onClick={(e): void => { e.stopPropagation(); onDeleteFolder(folder) } }
+              >
                 <XIcon />
               </button>
             </>
