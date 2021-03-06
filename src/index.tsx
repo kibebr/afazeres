@@ -1,9 +1,7 @@
 import React, { FunctionComponent, useState, useEffect } from 'react'
 import { render } from 'react-dom'
 import { Sidebar } from './components/Sidebar'
-import { User } from './domain/User'
 import { Afazer } from './domain/Afazer'
-import { AfazeresContainer } from './domain/AfazeresContainer'
 import { AfazeresContainerComponent } from './components/AfazeresContainerComponent'
 import { Folder, deleteFolderFrom } from './domain/Folder'
 import { ReactComponent as PersonIcon } from '../assets/icons/person.svg'
@@ -15,45 +13,8 @@ export interface UserInfo {
   username: string
 }
 
-const sampleAfazer: Afazer = {
-  content: 'afazer1'
-}
-
-const sampleAfazer2: Afazer = {
-  content: 'blah'
-}
-
-const sampleAfazeresContainer: AfazeresContainer = {
-  color: 'bg-red-400',
-  afazeres: [sampleAfazer]
-}
-
-const sampleAfazeresContainer2: AfazeresContainer = {
-  color: 'bg-red-400',
-  afazeres: [sampleAfazer, sampleAfazer2]
-}
-
-const sampleFolder: Folder = {
-  id: '10',
-  name: 'Health',
-  color: 'bg-green-400',
-  afazeresContainers: [sampleAfazeresContainer]
-}
-
-const sampleFolder2: Folder = {
-  id: '11',
-  name: 'Tech stuff',
-  color: 'bg-red-400',
-  afazeresContainers: [sampleAfazeresContainer2]
-}
-
-const sampleUser: User = {
-  username: 'vitor',
-  folders: [sampleFolder, sampleFolder2]
-}
-
 const App: FunctionComponent = () => {
-  const [userInfo, setUserInfo] = useState<UserInfo>(sampleUser)
+  const [userInfo, setUserInfo] = useState<UserInfo>({ username: 'DEMO' })
   const [folders, setFolders] = useState<Folder[]>([])
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null)
 
@@ -62,16 +23,19 @@ const App: FunctionComponent = () => {
       .then(({ username, folders }) => {
         setUserInfo({ username })
         setFolders(folders)
+        setSelectedFolder(folders[0] ?? null)
+        console.log(folders)
       })
       .catch((err) => console.error(err))
   }, [])
 
   const handleAddAfazer = (afazer: Afazer): void => {
-    console.log('added afazer!')
+
   }
 
   const handleSelectFolder = (folder: Folder): void => {
     setSelectedFolder(folder)
+    console.log(folder)
   }
 
   const handleDeleteFolder = (folder: Folder): void => {
@@ -111,8 +75,8 @@ const App: FunctionComponent = () => {
           </nav>
 
           <div className='flex flex-wrap flex-col items-center md:flex-row space-y-4 md:space-y-0 md:space-x-4 mt-4'>
-            {selectedFolder?.afazeresContainers.map((ac) => (
-              <AfazeresContainerComponent afazeres={ac.afazeres} onAddAfazer={handleAddAfazer} />
+            {selectedFolder?.afazeresContainers.map(({ title, afazeres }) => (
+              <AfazeresContainerComponent title={title} afazeres={afazeres} onAddAfazer={handleAddAfazer} />
             ))}
           </div>
 

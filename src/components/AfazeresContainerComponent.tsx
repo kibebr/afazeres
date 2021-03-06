@@ -15,11 +15,12 @@ const standardOpacityTrans = {
 }
 
 interface AfazeresContainerProps {
+  title: string
   afazeres: Afazer[]
   onAddAfazer: (afazer: Afazer) => unknown
 }
 
-export const AfazeresContainerComponent = ({ afazeres, onAddAfazer }: AfazeresContainerProps): JSX.Element => {
+export const AfazeresContainerComponent = ({ title, afazeres, onAddAfazer }: AfazeresContainerProps): JSX.Element => {
   const [isHovering, setIsHovering] = useState<boolean>(false)
 
   const textarea = useRef<HTMLTextAreaElement | null>(null)
@@ -28,7 +29,6 @@ export const AfazeresContainerComponent = ({ afazeres, onAddAfazer }: AfazeresCo
     if (textarea.current !== null) {
       const value = textarea.current.value
       if (value.length > 0) {
-        onAddAfazer({ content: value })
         textarea.current.value = ''
       }
     }
@@ -44,7 +44,7 @@ export const AfazeresContainerComponent = ({ afazeres, onAddAfazer }: AfazeresCo
         <button className='w-16 h-16 bg-red-400'></button>
         <div className='flex flex-1 flex-col'>
           <div className='flex flex-row justify-between w-full'>
-            <h2 className='font-bold text-xl'>Most important</h2>
+            <h2 className='font-bold text-xl'>{title}</h2>
             <Transition
               show={isHovering}
               {...standardOpacityTrans}
@@ -59,10 +59,10 @@ export const AfazeresContainerComponent = ({ afazeres, onAddAfazer }: AfazeresCo
 
       <div>
         <ul className='flex flex-col text-sm space-y-2'>
-          {afazeres.map((afazer) => (
+          {afazeres.map(({ content }) => (
             <TextareaAutosize
               maxRows={5}
-              defaultValue={afazer.content}
+              value={content}
               className='transition-height resize-none bg-gray-100 rounded-md p-2 focus:ring-2 ring-gray-200 hover:ring-1'
             />
           ))}

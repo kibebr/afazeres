@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState, useEffect } from 'react'
 import { SmallFolderIcon } from './SmallFolderIcon'
-import { Folder } from '../index'
+import { Folder } from '../domain/Folder'
 import { ReactComponent as PlusIcon } from '../../assets/icons/plus.svg'
 import { ReactComponent as XIcon } from '../../assets/icons/x.svg'
 import ReactTooltip from 'react-tooltip'
@@ -47,7 +47,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = ({ folders, onSelectFold
           <SmallFolderIcon color={folder.color} />
           {!isSmall && (
             <>
-              <span className='font-bold text-gray-700 ml-2'>{folder.name}</span>
+              <span className='font-bold text-gray-700 ml-2'>{folder.title}</span>
               <button
                 className='ml-auto hover:bg-red-500 hover:text-white transition-colors rounded-full'
                 onClick={(e): void => { e.stopPropagation(); onDeleteFolder(folder) } }
