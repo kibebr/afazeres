@@ -75,7 +75,7 @@ const App: FunctionComponent = () => {
   }
 
   const handleDeleteFolder = (folder: Folder): void => {
-    setFolders(fs => deleteFolderFrom(folder)(fs))
+    setFolders(deleteFolderFrom(folder))
 
     if (folder.id === selectedFolder?.id) {
       setSelectedFolder(null)

@@ -2,7 +2,7 @@ import { AfazeresContainer } from './AfazeresContainer'
 
 export interface Folder {
   id: string
-  name: string
+  title: string
   color: string
   afazeresContainers: AfazeresContainer[]
 }

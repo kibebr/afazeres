@@ -2,16 +2,27 @@ import { User } from '../domain/User'
 import { fetchUser } from '../services/UserService'
 import { string, object, array } from 'zod'
 
-const userResponseV = object({
-  username: string(),
-  folders: array(object({
-    id: string(),
-    name: string(),
-    color: string(),
-    afazeresContainers: array(object({
-      content: string()
-    }))
-  }))
+const AfazerV = object({
+  id: string(),
+  content: string()
 })
 
-export const getUser = async (): Promise<User> => await fetchUser().then(userResponseV.parse)
+const AfazeresContainerV = object({
+  id: string(),
+  title: string(),
+  afazeres: array(AfazerV)
+})
+
+const FolderV = object({
+  id: string(),
+  title: string(),
+  color: string(),
+  afazeresContainers: array(AfazeresContainerV)
+})
+
+const UserV = object({
+  username: string(),
+  folders: array(FolderV)
+})
+
+export const getUser = async (): Promise<User> => await fetchUser().then(UserV.parse)
