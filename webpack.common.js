@@ -11,6 +11,7 @@ module.exports = {
     rules: [{
       test: /\.(ts|tsx)$/,
       loader: 'esbuild-loader',
+      exclude: /node_modules/,
       options: {
         loader: 'tsx',
         target: 'es2016'

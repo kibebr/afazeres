@@ -1,5 +1,5 @@
 import React, { FunctionComponent, FocusEvent, useState, useRef } from 'react'
-import { Afazer } from '../index'
+import { Afazer } from '../domain/Afazer'
 import { Card } from './Card'
 import { ReactComponent as Menu } from '../../assets/icons/three-dots-vertical.svg'
 import { Transition } from '@headlessui/react'
@@ -19,7 +19,7 @@ interface AfazeresContainerProps {
   onAddAfazer: (afazer: Afazer) => unknown
 }
 
-export const AfazeresContainer = ({ afazeres, onAddAfazer }: AfazeresContainerProps): JSX.Element => {
+export const AfazeresContainerComponent = ({ afazeres, onAddAfazer }: AfazeresContainerProps): JSX.Element => {
   const [isHovering, setIsHovering] = useState<boolean>(false)
 
   const textarea = useRef<HTMLTextAreaElement | null>(null)

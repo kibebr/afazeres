@@ -1,30 +1,18 @@
 import React, { FunctionComponent, useState, useEffect } from 'react'
-import { AfazeresContainer } from './components/AfazeresContainer'
 import { render } from 'react-dom'
 import { Sidebar } from './components/Sidebar'
+import { User } from './domain/User'
+import { Afazer } from './domain/Afazer'
+import { AfazeresContainer } from './domain/AfazeresContainer'
+import { AfazeresContainerComponent } from './components/AfazeresContainerComponent'
+import { Folder, deleteFolderFrom } from './domain/Folder'
 import { ReactComponent as PersonIcon } from '../assets/icons/person.svg'
 import { ReactComponent as SearchIcon } from '../assets/icons/search.svg'
+import { getUser } from './mappers/index'
 import './index.css'
 
-export interface Afazer {
-  content: string
-}
-
-export interface AfazeresContainer {
-  color: string
-  afazeres: Afazer[]
-}
-
-export interface User {
+export interface UserInfo {
   username: string
-  folders: Folder[]
-}
-
-export interface Folder {
-  id: string
-  name: string
-  color: string
-  afazeresContainers: AfazeresContainer[]
 }
 
 const sampleAfazer: Afazer = {
@@ -65,9 +53,18 @@ const sampleUser: User = {
 }
 
 const App: FunctionComponent = () => {
-  const [user, setUser] = useState<User>(sampleUser)
-  const [folders, setFolders] = useState<Folder[]>(user.folders ?? [])
-  const [selectedFolder, setSelectedFolder] = useState<Folder | null>(user.folders[0] ?? null)
+  const [userInfo, setUserInfo] = useState<UserInfo>(sampleUser)
+  const [folders, setFolders] = useState<Folder[]>([])
+  const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null)
+
+  useEffect((): void => {
+    getUser()
+      .then(({ username, folders }) => {
+        setUserInfo({ username })
+        setFolders(folders)
+      })
+      .catch((err) => console.error(err))
+  }, [])
 
   const handleAddAfazer = (afazer: Afazer): void => {
     console.log('added afazer!')
@@ -78,21 +75,12 @@ const App: FunctionComponent = () => {
   }
 
   const handleDeleteFolder = (folder: Folder): void => {
-    const afterUpdate = (): void => {
-      console.log('after update')
-    }
-
-    setFolders((xs) => xs.filter((x) => x.id !== folder.id))
+    setFolders(fs => deleteFolderFrom(folder)(fs))
 
     if (folder.id === selectedFolder?.id) {
-      console.log('ow!')
       setSelectedFolder(null)
     }
   }
-
-  useEffect((): void => {
-    console.log(selectedFolder)
-  }, [selectedFolder])
 
   return (
     <div className='bg-gray-50 outline-none antialiased'>
@@ -124,7 +112,7 @@ const App: FunctionComponent = () => {
 
           <div className='flex flex-wrap flex-col items-center md:flex-row space-y-4 md:space-y-0 md:space-x-4 mt-4'>
             {selectedFolder?.afazeresContainers.map((ac) => (
-              <AfazeresContainer afazeres={ac.afazeres} onAddAfazer={handleAddAfazer} />
+              <AfazeresContainerComponent afazeres={ac.afazeres} onAddAfazer={handleAddAfazer} />
             ))}
           </div>
 
