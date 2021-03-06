@@ -1,11 +1,17 @@
-import React, { ReactNode, FunctionComponent } from 'react'
+import React, { FunctionComponent, MouseEventHandler } from 'react'
 
 interface CardProps {
-  children: ReactNode
+  classes?: string
+  onMouseEnter?: MouseEventHandler<HTMLDivElement>
+  onMouseLeave?: MouseEventHandler<HTMLDivElement>
 }
 
-export const Card: FunctionComponent<CardProps> = ({ children }) => (
-  <div className='shadow-lg w-96 h-112 rounded-xl bg-white transform transition-transform hover:scale-105'>
+export const Card: FunctionComponent<CardProps> = ({ children, classes, onMouseEnter, onMouseLeave }) => (
+  <div
+    className={`p-6 shadow-lg h-96 md:w-96 md:h-112 rounded-xl bg-white ${classes !== undefined ? classes : ''}`}
+    onMouseEnter={onMouseEnter}
+    onMouseLeave={onMouseLeave}
+  >
     {children}
   </div>
 )

@@ -81,7 +81,8 @@ module.exports = {
         }
       },
       transitionProperty: {
-        width: 'width'
+        width: 'width',
+        height: 'height'
       },
       boxShadow: (theme) => ({ ...buildShadowPalette(theme) }),
       height: {
@@ -91,8 +92,10 @@ module.exports = {
   },
   variants: {
     extend: {
+      ringWidth: ['hover'],
       width: ['hover']
     }
   },
-  plugins: []
+  plugins: [],
+  important: true
 }
