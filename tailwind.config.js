@@ -87,6 +87,9 @@ module.exports = {
       boxShadow: (theme) => ({ ...buildShadowPalette(theme) }),
       height: {
         112: '28rem'
+      },
+      width: {
+        144: '36rem'
       }
     }
   },

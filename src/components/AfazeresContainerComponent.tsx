@@ -5,6 +5,7 @@ import { ReactComponent as Menu } from '../../assets/icons/three-dots-vertical.s
 import { AfazeresContainerIcon } from './AfazeresContainerIcon'
 import { Transition } from '@headlessui/react'
 import TextareaAutosize from 'react-textarea-autosize'
+import { AfazeresContainer } from '../domain/AfazeresContainer'
 
 const standardOpacityTrans = {
   enter: 'transition-opacity duration-300',
@@ -17,13 +18,17 @@ const standardOpacityTrans = {
 
 interface AfazeresContainerProps {
   title: string
-  afazeres: Afazer[]
+  afazeresContainer: AfazeresContainer
   onAddAfazer: (afazer: Afazer) => unknown
+  onChangeAfazerContainerTitle: (t: string, ac: AfazeresContainer) => unknown
 }
 
-export const AfazeresContainerComponent = ({ title, afazeres, onAddAfazer }: AfazeresContainerProps): JSX.Element => {
+export const AfazeresContainerComponent = ({
+  afazeresContainer,
+  onAddAfazer,
+  onChangeAfazerContainerTitle
+}: AfazeresContainerProps): JSX.Element => {
   const [isHovering, setIsHovering] = useState<boolean>(false)
-
   const textarea = useRef<HTMLTextAreaElement | null>(null)
 
   const handleOnFocusOut = (): void => {
@@ -42,10 +47,15 @@ export const AfazeresContainerComponent = ({ title, afazeres, onAddAfazer }: Afa
       onMouseLeave={(): void => setIsHovering(false)}
     >
       <div className='flex flex-row space-x-4 h-auto w-full'>
-        <AfazeresContainerIcon classes='bg-red-400' />
+        <AfazeresContainerIcon classes='bg-red-400 flex-shrink-0' />
+
         <div className='flex flex-1 flex-col'>
           <div className='flex flex-row justify-between w-full'>
-            <h2 className='font-bold text-xl'>{title}</h2>
+            <input
+              className='font-bold text-xl w-full'
+              defaultValue={afazeresContainer.title}
+              onBlur={({ target }): unknown => onChangeAfazerContainerTitle(target.value, afazeresContainer)}
+            />
             <Transition
               show={isHovering}
               {...standardOpacityTrans}
@@ -56,11 +66,12 @@ export const AfazeresContainerComponent = ({ title, afazeres, onAddAfazer }: Afa
             </Transition>
           </div>
         </div>
+
       </div>
 
       <div>
         <ul className='flex flex-col text-sm space-y-2'>
-          {afazeres.map(({ content }) => (
+          {afazeresContainer.afazeres.map(({ content }) => (
             <TextareaAutosize
               maxRows={5}
               value={content}

@@ -13,6 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "@svgr/webpack": "^5.5.0",
+    "@types/emoji-mart": "^3.0.4",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
     "@types/react-responsive": "^8.0.2",
@@ -46,6 +47,8 @@
   },
   "dependencies": {
     "@headlessui/react": "^0.3.1",
+    "emoji-mart": "^3.0.1",
+    "emoji-picker-react": "^3.4.2",
     "react": "^17.0.1",
     "react-dnd": "^13.1.1",
     "react-dnd-html5-backend": "^12.1.1",
