@@ -1,18 +1,17 @@
 import React, { FunctionComponent, useState, useEffect } from 'react'
 import { render } from 'react-dom'
 import { Sidebar } from './components/Sidebar'
-import { Card } from './components/Card'
 import { Afazer } from './domain/Afazer'
-import { AfazeresContainerComponent } from './components/AfazeresContainerComponent'
-import { AddAfazeresContainerCard } from './components/AddAfazeresContainerCard'
+import { ContainerComponent } from './components/Container/ContainerComponent'
+import { AddContainerCard } from './components/Card/AddContainerCard'
 import { Folder, deleteFolderFrom } from './domain/Folder'
 import { ReactComponent as PersonIcon } from '../assets/icons/person.svg'
 import { ReactComponent as SearchIcon } from '../assets/icons/search.svg'
-import { ReactComponent as PlusIcon } from '../assets/icons/plus.svg'
 import { getUser } from './mappers/index'
 import { ModalBackground } from './components/Modal/ModalBackground'
 import { MediumModalForeground } from './components/Modal/MediumModalForeground'
 import { ReactComponent as XIcon } from '../assets/icons/x.svg'
+import { FolderList } from './components/Folder/FolderList'
 import Picker from 'emoji-picker-react'
 import './index.css'
 
@@ -32,24 +31,20 @@ const App: FunctionComponent = () => {
         setUserInfo({ username })
         setFolders(folders)
         setSelectedFolder(folders[0] ?? null)
-        console.log(folders)
       })
       .catch((err) => console.error(err))
   }, [])
 
-  const handleAddAfazer = (afazer: Afazer): void => {
+  const handleAddAfazer = (a: Afazer): void => {
 
   }
 
-  const handleSelectFolder = (folder: Folder): void => {
-    setSelectedFolder(folder)
-    console.log(folder)
-  }
+  const handleSelectFolder: (f: Folder) => void = setSelectedFolder
 
-  const handleDeleteFolder = (folder: Folder): void => {
-    setFolders(deleteFolderFrom(folder))
+  const handleDeleteFolder = (f: Folder): void => {
+    setFolders(deleteFolderFrom(f))
 
-    if (folder.id === selectedFolder?.id) {
+    if (f.id === selectedFolder?.id) {
       setSelectedFolder(null)
     }
   }
@@ -73,11 +68,13 @@ const App: FunctionComponent = () => {
       )}
 
       <div className='flex flex-col md:flex-row'>
-        <Sidebar
-          folders={folders}
-          onSelectFolder={handleSelectFolder}
-          onDeleteFolder={handleDeleteFolder}
-        />
+        <Sidebar>
+          <FolderList
+            folders={folders}
+            onSelectFolder={handleSelectFolder}
+            onDeleteFolder={handleDeleteFolder}
+          />
+        </Sidebar>
 
         <div className='p-4 flex-1 w-full rounded-xl shadow-sm'>
 
@@ -100,9 +97,9 @@ const App: FunctionComponent = () => {
 
           <div className='flex flex-wrap flex-col items-center md:flex-row space-y-4 md:space-y-0 md:space-x-4 mt-4'>
             {selectedFolder?.afazeresContainers.map((ac) => (
-              <AfazeresContainerComponent afazeresContainer={ac} onAddAfazer={handleAddAfazer} />
+              <ContainerComponent afazeresContainer={ac} onAddAfazer={handleAddAfazer} />
             ))}
-            {selectedFolder !== null && <AddAfazeresContainerCard onAdd={(e): void => console.log(e)} />}
+            {selectedFolder !== null && <AddContainerCard onAdd={(e): void => console.log(e)} />}
           </div>
 
         </div>

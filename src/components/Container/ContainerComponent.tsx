@@ -1,11 +1,11 @@
-import React, { FunctionComponent, FocusEvent, useState, useRef } from 'react'
-import { Afazer } from '../domain/Afazer'
-import { Card } from './Card'
-import { ReactComponent as Menu } from '../../assets/icons/three-dots-vertical.svg'
-import { AfazeresContainerIcon } from './AfazeresContainerIcon'
+import React, { useState, useRef } from 'react'
+import { Afazer } from '../../domain/Afazer'
+import { Card } from '../Card/Card'
+import { ReactComponent as Menu } from '../../../assets/icons/three-dots-vertical.svg'
+import { ContainerIcon } from './ContainerIcon'
 import { Transition } from '@headlessui/react'
 import TextareaAutosize from 'react-textarea-autosize'
-import { AfazeresContainer } from '../domain/AfazeresContainer'
+import { AfazeresContainer } from '../../domain/AfazeresContainer'
 
 const standardOpacityTrans = {
   enter: 'transition-opacity duration-300',
@@ -23,7 +23,7 @@ interface AfazeresContainerProps {
   onChangeAfazerContainerTitle: (t: string, ac: AfazeresContainer) => unknown
 }
 
-export const AfazeresContainerComponent = ({
+export const ContainerComponent = ({
   afazeresContainer,
   onAddAfazer,
   onChangeAfazerContainerTitle
@@ -47,7 +47,7 @@ export const AfazeresContainerComponent = ({
       onMouseLeave={(): void => setIsHovering(false)}
     >
       <div className='flex flex-row space-x-4 h-auto w-full'>
-        <AfazeresContainerIcon classes='bg-red-400 flex-shrink-0' />
+        <ContainerIcon classes='bg-red-400 flex-shrink-0' />
 
         <div className='flex flex-1 flex-col'>
           <div className='flex flex-row justify-between w-full'>
