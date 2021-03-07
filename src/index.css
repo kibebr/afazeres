@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer utilities {
+  html, body {
+    height: 100% !important;
+  }
+
   :focus {
     outline: none !important;
   }

@@ -66,7 +66,7 @@ const App: FunctionComponent = () => {
   }
 
   return (
-    <div className='bg-gray-50 outline-none antialiased'>
+    <div className='bg-gray-50 outline-none antialiased outline-black'>
       {modalOpen && (
         <ModalBackground>
           <MediumModalForeground>
@@ -83,7 +83,7 @@ const App: FunctionComponent = () => {
         </ModalBackground>
       )}
 
-      <div className='flex flex-col md:flex-row'>
+      <div className='flex flex-col md:flex-row h-full'>
         <Sidebar>
           <FolderList
             folders={folders}
@@ -92,7 +92,7 @@ const App: FunctionComponent = () => {
           />
         </Sidebar>
 
-        <div className='p-4 flex-1 w-full rounded-xl shadow-sm'>
+        <div className='p-4 flex-1 w-full rounded-xl shadow-sm min-h-screen h-full'>
 
           <nav className='flex flex-row w-full items-center'>
             <div>
@@ -111,16 +111,18 @@ const App: FunctionComponent = () => {
             </div>
           </nav>
 
-          <div className='flex flex-wrap flex-col items-center md:flex-row space-y-4 md:space-y-0 md:space-x-4 mt-4'>
+          <div className='flex flex-col md:flex-row flex-wrap overflow-hidden -mx-2'>
             {folders.find(f => f.id === selectedFolder)?.containers.map((c) => (
-              <ContainerComponent
-                container={c}
-                title='test'
-                onAddAfazer={handleAddAfazer}
-                onChangeAfazerContainerTitle={(): void => console.log('changed container title')}
-              />
+              <div className='px-2 my-2'>
+                <ContainerComponent
+                  container={c}
+                  title='test'
+                  onAddAfazer={handleAddAfazer}
+                  onChangeAfazerContainerTitle={(): void => console.log('changed container title')}
+                />
+              </div>
             ))}
-            {selectedFolder !== null && <AddContainerCard onAdd={handleAddContainer} />}
+            {selectedFolder !== null && <div className='px-2 my-2'><AddContainerCard onAdd={handleAddContainer} /></div>}
           </div>
 
         </div>
