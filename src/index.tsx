@@ -1,11 +1,14 @@
 import React, { FunctionComponent, useState, useEffect } from 'react'
 import { render } from 'react-dom'
 import { Sidebar } from './components/Sidebar'
+import { Card } from './components/Card'
 import { Afazer } from './domain/Afazer'
 import { AfazeresContainerComponent } from './components/AfazeresContainerComponent'
+import { AddAfazeresContainerCard } from './components/AddAfazeresContainerCard'
 import { Folder, deleteFolderFrom } from './domain/Folder'
 import { ReactComponent as PersonIcon } from '../assets/icons/person.svg'
 import { ReactComponent as SearchIcon } from '../assets/icons/search.svg'
+import { ReactComponent as PlusIcon } from '../assets/icons/plus.svg'
 import { getUser } from './mappers/index'
 import './index.css'
 
@@ -78,6 +81,7 @@ const App: FunctionComponent = () => {
             {selectedFolder?.afazeresContainers.map(({ title, afazeres }) => (
               <AfazeresContainerComponent title={title} afazeres={afazeres} onAddAfazer={handleAddAfazer} />
             ))}
+            <AddAfazeresContainerCard onAdd={(e): void => console.log(e)} />
           </div>
 
         </div>
