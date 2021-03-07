@@ -7,7 +7,7 @@ const AfazerV = object({
   content: string()
 })
 
-const AfazeresContainerV = object({
+const ContainerV = object({
   id: string(),
   title: string(),
   afazeres: array(AfazerV)
@@ -17,7 +17,7 @@ const FolderV = object({
   id: string(),
   title: string(),
   color: string(),
-  afazeresContainers: array(AfazeresContainerV)
+  containers: array(ContainerV)
 })
 
 const UserV = object({

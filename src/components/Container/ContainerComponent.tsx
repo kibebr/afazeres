@@ -5,7 +5,7 @@ import { ReactComponent as Menu } from '../../../assets/icons/three-dots-vertica
 import { ContainerIcon } from './ContainerIcon'
 import { Transition } from '@headlessui/react'
 import TextareaAutosize from 'react-textarea-autosize'
-import { AfazeresContainer } from '../../domain/AfazeresContainer'
+import { Container } from '../../domain/Container'
 
 const standardOpacityTrans = {
   enter: 'transition-opacity duration-300',
@@ -16,18 +16,18 @@ const standardOpacityTrans = {
   leaveTo: 'opacity-0'
 }
 
-interface AfazeresContainerProps {
+interface ContainerComponentProps {
   title: string
-  afazeresContainer: AfazeresContainer
+  container: Container
   onAddAfazer: (afazer: Afazer) => unknown
   onChangeAfazerContainerTitle: (t: string, ac: AfazeresContainer) => unknown
 }
 
 export const ContainerComponent = ({
-  afazeresContainer,
+  container,
   onAddAfazer,
   onChangeAfazerContainerTitle
-}: AfazeresContainerProps): JSX.Element => {
+}: ContainerComponentProps): JSX.Element => {
   const [isHovering, setIsHovering] = useState<boolean>(false)
   const textarea = useRef<HTMLTextAreaElement | null>(null)
 
@@ -53,8 +53,8 @@ export const ContainerComponent = ({
           <div className='flex flex-row justify-between w-full'>
             <input
               className='font-bold text-xl w-full'
-              defaultValue={afazeresContainer.title}
-              onBlur={({ target }): unknown => onChangeAfazerContainerTitle(target.value, afazeresContainer)}
+              defaultValue={container.title}
+              onBlur={({ target }): unknown => onChangeAfazerContainerTitle(target.value, container)}
             />
             <Transition
               show={isHovering}
@@ -71,7 +71,7 @@ export const ContainerComponent = ({
 
       <div>
         <ul className='flex flex-col text-sm space-y-2'>
-          {afazeresContainer.afazeres.map(({ content }) => (
+          {container.afazeres.map(({ content }) => (
             <TextareaAutosize
               maxRows={5}
               value={content}
