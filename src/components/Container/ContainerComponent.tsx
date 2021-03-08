@@ -3,6 +3,7 @@ import { Afazer } from '../../domain/Afazer'
 import { Card } from '../Card/Card'
 import { ReactComponent as Menu } from '../../../assets/icons/three-dots-vertical.svg'
 import { ContainerIcon } from './ContainerIcon'
+import { EditableContainerIcon } from './EditableContainerIcon.tsx'
 import { Transition } from '@headlessui/react'
 import { Textarea } from '../Textarea'
 import { AfazerComponent } from '../AfazerComponent'
@@ -49,7 +50,7 @@ export const ContainerComponent = ({
       onMouseLeave={(): void => setIsHovering(false)}
     >
       <div className='flex flex-row space-x-4 h-auto w-full'>
-        <ContainerIcon classes='bg-red-400 flex-shrink-0' />
+        <EditableContainerIcon classes='flex-shrink-0' />
 
         <div className='flex flex-1 flex-col'>
           <div className='flex flex-row justify-between w-full'>
@@ -69,8 +70,8 @@ export const ContainerComponent = ({
       </div>
 
       <ul className='flex flex-col text-sm space-y-2'>
-        {container.afazeres.map(({ content }) => (
-        <AfazerComponent content={content} onChangeContent={(s): void => console.log(s)}/>
+        {Object.values(container.afazeres).map(({ content }) => (
+          <AfazerComponent content={content} onChangeContent={(s): void => console.log(s)}/>
         ))}
 
         <Transition

@@ -1,6 +1,6 @@
 import { User } from '../domain/User'
 import { fetchUser } from '../services/UserService'
-import { string, object, array } from 'zod'
+import { string, object, record } from 'zod'
 
 const AfazerV = object({
   id: string(),
@@ -10,19 +10,20 @@ const AfazerV = object({
 const ContainerV = object({
   id: string(),
   title: string(),
-  afazeres: array(AfazerV)
+  refParent: string(),
+  afazeres: record(AfazerV)
 })
 
 const FolderV = object({
   id: string(),
   title: string(),
   color: string(),
-  containers: array(ContainerV)
+  containers: record(ContainerV)
 })
 
 const UserV = object({
   username: string(),
-  folders: array(FolderV)
+  folders: record(FolderV)
 })
 
 export const getUser = async (): Promise<User> => await fetchUser().then(UserV.parse)

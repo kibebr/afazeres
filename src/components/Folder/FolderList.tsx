@@ -5,7 +5,7 @@ import { SmallFolderIcon } from './SmallFolderIcon'
 import { useIsDeviceSmall } from '../../hooks/useIsDeviceSmall'
 
 interface FolderListProps {
-  folders: Folder[]
+  folders: { [key: string]: Folder }
   onSelectFolder: (f: Folder) => unknown
   onDeleteFolder: (f: Folder) => unknown
 }
@@ -15,7 +15,7 @@ export const FolderList = ({ folders, onSelectFolder, onDeleteFolder }: FolderLi
 
   return (
     <div className='flex flex-row md:flex-col space-x-4 md:space-x-0'>
-      {folders.map((folder) => (
+      {Object.values(folders).map((folder) => (
         <button
           className={!isSmall ? 'flex flex-row items-center hover:bg-gray-300 p-2 rounded-md transition-colors' : ''}
           onClick={(): unknown => onSelectFolder(folder)}

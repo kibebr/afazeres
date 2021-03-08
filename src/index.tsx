@@ -13,8 +13,9 @@ import { MediumModalForeground } from './components/Modal/MediumModalForeground'
 import { ReactComponent as XIcon } from '../assets/icons/x.svg'
 import { FolderList } from './components/Folder/FolderList'
 import { Message } from './components/Message'
-import { Container, createContainer } from './domain/Container'
+import { Container, createContainer, changeTitle, addAfazer } from './domain/Container'
 import { useIsDeviceSmall } from './hooks/useIsDeviceSmall'
+import update from 'immutability-helper'
 import Picker from 'emoji-picker-react'
 import './index.css'
 
@@ -24,7 +25,7 @@ export interface UserInfo {
 
 const App: FunctionComponent = () => {
   const [userInfo, setUserInfo] = useState<UserInfo>({ username: 'DEMO' })
-  const [folders, setFolders] = useState<Folder[]>([])
+  const [folders, setFolders] = useState<Record<string, Folder>>({})
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null)
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [message, setMessage] = useState<string>('')
@@ -36,7 +37,7 @@ const App: FunctionComponent = () => {
       .then(({ username, folders }) => {
         setUserInfo({ username })
         setFolders(folders)
-        setSelectedFolder(folders[0]?.id ?? null)
+        setSelectedFolder(Object.keys(folders)[0] ?? null)
       })
       .catch((err) => console.error(err))
   }, [])
@@ -48,11 +49,18 @@ const App: FunctionComponent = () => {
   }, [message])
 
   const handleAddAfazer = (c: Container) => (s: string): void => {
-    const afazer = createAfazer({ content: s })
-    setFolders((fs) => fs.map((f) => ({
-      ...f,
-      containers: f.containers.map((_c) => _c.id === c.id ? ({ ..._c, afazeres: _c.afazeres.concat(afazer) }) : _c)
-    })))
+    setFolders(update(
+      folders,
+      {
+        [c.refParent]: {
+          containers: {
+            [c.id]: {
+              $apply: addAfazer(createAfazer({ content: s }))
+            }
+          }
+        }
+      }
+    ))
   }
 
   const handleAddFolder = (): void => {
@@ -63,9 +71,11 @@ const App: FunctionComponent = () => {
 
   const handleAddContainer = (): void => {
     if (selectedFolder !== null) {
-      const container = createContainer()
-      setFolders((fs) => fs.map((f) => f.id === selectedFolder ? addContainerTo(container)(f) : f))
     }
+  }
+
+  const handleChangeContainerTitle = (c: Container, t: string): void => {
+
   }
 
   const handleDeleteFolder = (f: Folder): void => {
@@ -99,7 +109,7 @@ const App: FunctionComponent = () => {
           {!isMobile && (
             <button
               onClick={handleAddFolder}
-              className='p-1 rounded-md text-white text-center bg-green-400 shadow-md font-bold'
+              className='p-1 rounded-md text-white text-center bg-green-400 shadow-md font-bold mb-2'
             >
               Create new folder
             </button>
@@ -121,7 +131,7 @@ const App: FunctionComponent = () => {
             </div>
 
             <div className='flex flex-row items-center ml-auto space-x-2'>
-              <button onClick={(): void => setModalOpen(true)}className='hover:bg-gray-200 transition-colors rounded-md p-2'>
+              <button onClick={(): void => setModalOpen(true)} className='hover:bg-gray-200 transition-colors rounded-md p-2'>
                 <SearchIcon className='w-5 h-5' />
               </button>
               <button className='hover:bg-gray-200 transition-colors rounded-md p-1'>
@@ -131,17 +141,22 @@ const App: FunctionComponent = () => {
           </nav>
 
           <div className='flex flex-col md:flex-row flex-wrap overflow-hidden -mx-2'>
-            {folders.find(f => f.id === selectedFolder)?.containers.map((c) => (
+            {selectedFolder !== null && Object.values(folders[selectedFolder].containers).map((c) => (
               <div className='px-2 my-2'>
                 <ContainerComponent
+                  key={c.id}
                   container={c}
                   title='test'
-                  onAddAfazer={(content): void => handleAddAfazer(c)(content)}
-                  onChangeAfazerContainerTitle={(): void => console.log('changed container title')}
+                  onAddAfazer={handleAddAfazer(c)}
+                  onChangeContainerTitle={(): void => console.log('added afazer')}
                 />
               </div>
             ))}
-            {selectedFolder !== null && <div className='px-2 my-2'><AddContainerCard onAdd={handleAddContainer} /></div>}
+            {selectedFolder !== null && (
+              <div className='px-2 my-2'>
+                <AddContainerCard onAdd={handleAddContainer} />
+              </div>
+            )}
           </div>
 
         </div>
