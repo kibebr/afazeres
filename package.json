@@ -17,6 +17,7 @@
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
     "@types/react-responsive": "^8.0.2",
+    "@types/shortid": "0.0.29",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "autoprefixer": "^10.2.4",
     "css-loader": "^5.0.2",
@@ -56,6 +57,7 @@
     "react-responsive": "^8.2.0",
     "react-textarea-autosize": "^8.3.2",
     "react-tooltip": "^4.2.15",
+    "shortid": "^2.2.16",
     "zod": "^1.11.11"
   }
 }

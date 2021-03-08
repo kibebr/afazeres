@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState, useEffect } from 'react'
 import { render } from 'react-dom'
 import { Sidebar } from './components/Sidebar'
-import { Afazer } from './domain/Afazer'
+import { Afazer, createAfazer } from './domain/Afazer'
 import { ContainerComponent } from './components/Container/ContainerComponent'
 import { AddContainerCard } from './components/Card/AddContainerCard'
 import { Folder, deleteFolderFrom, addContainerTo } from './domain/Folder'
@@ -13,7 +13,8 @@ import { MediumModalForeground } from './components/Modal/MediumModalForeground'
 import { ReactComponent as XIcon } from '../assets/icons/x.svg'
 import { FolderList } from './components/Folder/FolderList'
 import { Message } from './components/Message'
-import { createContainer } from './domain/Container'
+import { Container, createContainer } from './domain/Container'
+import { useIsDeviceSmall } from './hooks/useIsDeviceSmall'
 import Picker from 'emoji-picker-react'
 import './index.css'
 
@@ -27,6 +28,8 @@ const App: FunctionComponent = () => {
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null)
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [message, setMessage] = useState<string>('')
+
+  const isMobile = useIsDeviceSmall()
 
   useEffect((): void => {
     getUser()
@@ -44,8 +47,16 @@ const App: FunctionComponent = () => {
     }, 1000)
   }, [message])
 
-  const handleAddAfazer = (a: Afazer): void => {
+  const handleAddAfazer = (c: Container) => (s: string): void => {
+    const afazer = createAfazer({ content: s })
+    setFolders((fs) => fs.map((f) => ({
+      ...f,
+      containers: f.containers.map((_c) => _c.id === c.id ? ({ ..._c, afazeres: _c.afazeres.concat(afazer) }) : _c)
+    })))
+  }
 
+  const handleAddFolder = (): void => {
+    window.alert('to add folder')
   }
 
   const handleSelectFolder = ({ id }: Folder): void => setSelectedFolder(id)
@@ -85,6 +96,14 @@ const App: FunctionComponent = () => {
 
       <div className='flex flex-col md:flex-row h-full'>
         <Sidebar>
+          {!isMobile && (
+            <button
+              onClick={handleAddFolder}
+              className='p-1 rounded-md text-white text-center bg-green-400 shadow-md font-bold'
+            >
+              Create new folder
+            </button>
+          )}
           <FolderList
             folders={folders}
             onSelectFolder={handleSelectFolder}
@@ -117,7 +136,7 @@ const App: FunctionComponent = () => {
                 <ContainerComponent
                   container={c}
                   title='test'
-                  onAddAfazer={handleAddAfazer}
+                  onAddAfazer={(content): void => handleAddAfazer(c)(content)}
                   onChangeAfazerContainerTitle={(): void => console.log('changed container title')}
                 />
               </div>

@@ -4,7 +4,8 @@ import { Card } from '../Card/Card'
 import { ReactComponent as Menu } from '../../../assets/icons/three-dots-vertical.svg'
 import { ContainerIcon } from './ContainerIcon'
 import { Transition } from '@headlessui/react'
-import TextareaAutosize from 'react-textarea-autosize'
+import { Textarea } from '../Textarea'
+import { AfazerComponent } from '../AfazerComponent'
 import { Container } from '../../domain/Container'
 
 const standardOpacityTrans = {
@@ -19,14 +20,14 @@ const standardOpacityTrans = {
 interface ContainerComponentProps {
   title: string
   container: Container
-  onAddAfazer: (afazer: Afazer) => unknown
-  onChangeAfazerContainerTitle: (t: string, ac: AfazeresContainer) => unknown
+  onAddAfazer: (s: string) => unknown
+  onChangeContainerTitle: (t: string, c: Container) => unknown
 }
 
 export const ContainerComponent = ({
   container,
   onAddAfazer,
-  onChangeAfazerContainerTitle
+  onChangeContainerTitle
 }: ContainerComponentProps): JSX.Element => {
   const [isHovering, setIsHovering] = useState<boolean>(false)
   const textarea = useRef<HTMLTextAreaElement | null>(null)
@@ -35,6 +36,7 @@ export const ContainerComponent = ({
     if (textarea.current !== null) {
       const value = textarea.current.value
       if (value.length > 0) {
+        onAddAfazer(value)
         textarea.current.value = ''
       }
     }
@@ -54,12 +56,9 @@ export const ContainerComponent = ({
             <input
               className='font-bold text-xl w-full'
               defaultValue={container.title}
-              onBlur={({ target }): unknown => onChangeAfazerContainerTitle(target.value, container)}
+              onBlur={({ target }): unknown => onChangeContainerTitle(target.value, container)}
             />
-            <Transition
-              show={isHovering}
-              {...standardOpacityTrans}
-            >
+            <Transition show={isHovering} {...standardOpacityTrans}>
               <button className='hover:bg-gray-100 p-2 rounded-md transition-colors'>
                 <Menu />
               </button>
@@ -69,28 +68,23 @@ export const ContainerComponent = ({
 
       </div>
 
-      <div>
-        <ul className='flex flex-col text-sm space-y-2'>
-          {container.afazeres.map(({ content }) => (
-            <TextareaAutosize
-              maxRows={5}
-              value={content}
-              className='transition-height resize-none bg-gray-100 rounded-md p-2 focus:ring-2 ring-gray-200 hover:ring-1'
-            />
-          ))}
-          <Transition
-            show={isHovering || (textarea.current !== null && textarea.current.value.length > 0)}
-            {...standardOpacityTrans}
-          >
-            <TextareaAutosize
-              ref={textarea}
-              maxRows={5}
-              className='w-full transition-height resize-none bg-gray-100 rounded-md p-2 hover:ring-1 focus:ring-2 ring-gray-200'
-              onBlur={handleOnFocusOut}
-            />
-          </Transition>
-        </ul>
-      </div>
+      <ul className='flex flex-col text-sm space-y-2'>
+        {container.afazeres.map(({ content }) => (
+        <AfazerComponent content={content} onChangeContent={(s): void => console.log(s)}/>
+        ))}
+
+        <Transition
+          show={isHovering || (textarea.current !== null && textarea.current.value.length > 0)}
+          {...standardOpacityTrans}
+        >
+          <Textarea
+            ref={textarea}
+            maxRows={5}
+            className='w-full'
+            onBlur={handleOnFocusOut}
+          />
+        </Transition>
+      </ul>
     </Card>
   )
 }
