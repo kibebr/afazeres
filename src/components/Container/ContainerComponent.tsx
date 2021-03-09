@@ -8,6 +8,7 @@ import { Transition } from '@headlessui/react'
 import { Textarea } from '../Textarea'
 import { AfazerComponent } from '../AfazerComponent'
 import { Container } from '../../domain/Container'
+import { Tag } from '../Tag'
 
 const standardOpacityTrans = {
   enter: 'transition-opacity duration-300',
@@ -22,13 +23,15 @@ interface ContainerComponentProps {
   title: string
   container: Container
   onAddAfazer: (s: string) => unknown
-  onChangeContainerTitle: (t: string, c: Container) => unknown
+  onChangeContainerTitle: (t: string) => unknown
+  onChangeContainerEmoji: (e: string) => unknown
 }
 
 export const ContainerComponent = ({
   container,
   onAddAfazer,
-  onChangeContainerTitle
+  onChangeContainerTitle,
+  onChangeContainerEmoji
 }: ContainerComponentProps): JSX.Element => {
   const [isHovering, setIsHovering] = useState<boolean>(false)
   const textarea = useRef<HTMLTextAreaElement | null>(null)
@@ -50,20 +53,25 @@ export const ContainerComponent = ({
       onMouseLeave={(): void => setIsHovering(false)}
     >
       <div className='flex flex-row space-x-4 h-auto w-full'>
-        <EditableContainerIcon classes='flex-shrink-0' />
+        <EditableContainerIcon classes='flex-shrink-0' emoji='t' onSelectNewEmoji={onChangeContainerEmoji} />
 
-        <div className='flex flex-1 flex-col'>
+        <div className='flex flex-1 flex-col items-start justify-between'>
           <div className='flex flex-row justify-between w-full'>
             <input
               className='font-bold text-xl w-full'
               defaultValue={container.title}
-              onBlur={({ target }): unknown => onChangeContainerTitle(target.value, container)}
+              onBlur={({ target }): unknown => onChangeContainerTitle(target.value)}
             />
             <Transition show={isHovering} {...standardOpacityTrans}>
               <button className='hover:bg-gray-100 p-2 rounded-md transition-colors'>
                 <Menu />
               </button>
             </Transition>
+          </div>
+          <div>
+            <Tag>
+              {Object.keys(container.afazeres).length} afazeres
+            </Tag>
           </div>
         </div>
 

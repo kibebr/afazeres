@@ -1,22 +1,20 @@
 import React, { FunctionComponent, useState, useEffect } from 'react'
 import { render } from 'react-dom'
 import { Sidebar } from './components/Sidebar'
-import { Afazer, createAfazer } from './domain/Afazer'
+import { createAfazer } from './domain/Afazer'
 import { ContainerComponent } from './components/Container/ContainerComponent'
 import { AddContainerCard } from './components/Card/AddContainerCard'
-import { Folder, deleteFolderFrom, addContainerTo } from './domain/Folder'
-import { ReactComponent as PersonIcon } from '../assets/icons/person.svg'
-import { ReactComponent as SearchIcon } from '../assets/icons/search.svg'
+import { Folder, deleteFolderFrom } from './domain/Folder'
 import { getUser } from './mappers/index'
 import { ModalBackground } from './components/Modal/ModalBackground'
 import { MediumModalForeground } from './components/Modal/MediumModalForeground'
 import { ReactComponent as XIcon } from '../assets/icons/x.svg'
 import { FolderList } from './components/Folder/FolderList'
-import { Message } from './components/Message'
-import { Container, createContainer, changeTitle, addAfazer } from './domain/Container'
+import { Container, addAfazer } from './domain/Container'
 import { useIsDeviceSmall } from './hooks/useIsDeviceSmall'
+import { Navbar } from './components/Navbar'
+import { EnlargedButton } from './components/EnlargedButton'
 import update from 'immutability-helper'
-import Picker from 'emoji-picker-react'
 import './index.css'
 
 export interface UserInfo {
@@ -27,8 +25,7 @@ const App: FunctionComponent = () => {
   const [userInfo, setUserInfo] = useState<UserInfo>({ username: 'DEMO' })
   const [folders, setFolders] = useState<Record<string, Folder>>({})
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null)
-  const [modalOpen, setModalOpen] = useState<boolean>(false)
-  const [message, setMessage] = useState<string>('')
+  const [finderModalOpen, setFinderModalOpen] = useState<boolean>(false)
 
   const isMobile = useIsDeviceSmall()
 
@@ -41,12 +38,6 @@ const App: FunctionComponent = () => {
       })
       .catch((err) => console.error(err))
   }, [])
-
-  useEffect((): void => {
-    setTimeout((): void => {
-      setMessage('')
-    }, 1000)
-  }, [message])
 
   const handleAddAfazer = (c: Container) => (s: string): void => {
     setFolders(update(
@@ -71,11 +62,16 @@ const App: FunctionComponent = () => {
 
   const handleAddContainer = (): void => {
     if (selectedFolder !== null) {
+      // TODO
     }
   }
 
-  const handleChangeContainerTitle = (c: Container, t: string): void => {
+  const handleChangeContainerTitle = (t: string, c: Container): void => {
+    // TODO
+  }
 
+  const handleChangeContainerEmoji = (e: string, c: Container): void => {
+    // TODO
   }
 
   const handleDeleteFolder = (f: Folder): void => {
@@ -88,12 +84,15 @@ const App: FunctionComponent = () => {
 
   return (
     <div className='bg-gray-50 outline-none antialiased outline-black'>
-      {modalOpen && (
+      {finderModalOpen && (
         <ModalBackground>
           <MediumModalForeground>
             <div className='h-full flex flex-col space-y-4'>
               <div className='flex flex-row-reverse'>
-                <button onClick={(): void => setModalOpen(false)} className='p-1 rounded-md hover:bg-red-400 hover:text-white transition-colors'>
+                <button
+                  onClick={(): void => setFinderModalOpen(false)}
+                  className='p-1 rounded-md hover:bg-red-400 hover:text-white transition-colors'
+                >
                   <XIcon className='w-5 h-5'/>
                 </button>
               </div>
@@ -107,12 +106,9 @@ const App: FunctionComponent = () => {
       <div className='flex flex-col md:flex-row h-full'>
         <Sidebar>
           {!isMobile && (
-            <button
-              onClick={handleAddFolder}
-              className='p-1 rounded-md text-white text-center bg-green-400 shadow-md font-bold mb-2'
-            >
+           <EnlargedButton onClick={handleAddFolder} classes='px-1'>
               Create new folder
-            </button>
+            </EnlargedButton>
           )}
           <FolderList
             folders={folders}
@@ -122,23 +118,10 @@ const App: FunctionComponent = () => {
         </Sidebar>
 
         <div className='p-4 flex-1 w-full rounded-xl shadow-sm min-h-screen h-full'>
-
-          <nav className='flex flex-row w-full items-center'>
-            <div>
-              <div className='py-1 px-6 rounded-md text-white text-center bg-blue-450 shadow-md font-bold'>
-                Afazeres
-              </div>
-            </div>
-
-            <div className='flex flex-row items-center ml-auto space-x-2'>
-              <button onClick={(): void => setModalOpen(true)} className='hover:bg-gray-200 transition-colors rounded-md p-2'>
-                <SearchIcon className='w-5 h-5' />
-              </button>
-              <button className='hover:bg-gray-200 transition-colors rounded-md p-1'>
-                <PersonIcon className='w-7 h-7' />
-              </button>
-            </div>
-          </nav>
+          <Navbar
+            onClickSearch={(): void => undefined}
+            onClickPerson={(): void => undefined}
+          />
 
           <div className='flex flex-col md:flex-row flex-wrap overflow-hidden -mx-2'>
             {selectedFolder !== null && Object.values(folders[selectedFolder].containers).map((c) => (
@@ -148,7 +131,8 @@ const App: FunctionComponent = () => {
                   container={c}
                   title='test'
                   onAddAfazer={handleAddAfazer(c)}
-                  onChangeContainerTitle={(): void => console.log('added afazer')}
+                  onChangeContainerTitle={(): void => console.log('changed container title')}
+                  onChangeContainerEmoji={(): void => undefined}
                 />
               </div>
             ))}
