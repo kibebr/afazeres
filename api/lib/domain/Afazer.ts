@@ -9,7 +9,7 @@ import { isShorterThan } from '../utils/String'
 export interface Content extends Newtype<{ readonly Content: unique symbol }, string> {}
 /* eslint-enable functional/prefer-type-literal */
 
-export const isoContent = iso<Content>()
+const isoContent = iso<Content>()
 
 export type Afazer = {
   readonly id: string

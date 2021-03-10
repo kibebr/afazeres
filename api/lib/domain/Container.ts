@@ -33,7 +33,7 @@ export const constructContainerDomainError = (r: ContainerDomainErrors): Contain
   reason: r
 })
 
-export const isoContainerName = iso<ContainerName>()
+const isoContainerName = iso<ContainerName>()
 
 const afazeresL = L.fromProp<Container>()('afazeres')
 

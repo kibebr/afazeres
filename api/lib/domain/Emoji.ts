@@ -12,7 +12,7 @@ export type EmojiDomainError = {
   readonly reason: 'NotEmoji'
 }
 
-export const isoEmoji = iso<Emoji>()
+const isoEmoji = iso<Emoji>()
 
 export const parseEmoji: (e: string) => O.Option<Emoji> = flow(
   O.fromPredicate(isEmoji),

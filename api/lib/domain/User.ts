@@ -18,9 +18,9 @@ export interface Email extends Newtype<{ readonly Email: unique symbol }, string
 export interface ParsedPassword extends Newtype<{ readonly ParsedPassword: unique symbol }, string> {}
 /* eslint-enable functional/prefer-type-literal */
 
-export const isoUsername = iso<Username>()
-export const isoEmail = iso<Email>()
-export const isoParsedPassword = iso<ParsedPassword>()
+const isoUsername = iso<Username>()
+const isoEmail = iso<Email>()
+const isoParsedPassword = iso<ParsedPassword>()
 
 export type UserDomainErrors
   = 'UsernameTooLong'
