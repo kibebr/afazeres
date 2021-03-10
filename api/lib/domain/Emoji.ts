@@ -7,6 +7,11 @@ import { isEmoji, getEmojiLength } from '../utils/String'
 export interface Emoji extends Newtype<{ readonly Emoji: unique symbol }, string> {}
 /* eslint-enable functional/prefer-type-literal */
 
+export type EmojiDomainError = {
+  readonly tag: 'EmojiDomainError',
+  readonly reason: 'NotEmoji'
+}
+
 export const isoEmoji = iso<Emoji>()
 
 export const parseEmoji: (e: string) => O.Option<Emoji> = flow(

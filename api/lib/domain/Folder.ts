@@ -1,10 +1,10 @@
 import * as E from 'fp-ts/Either'
 import * as t from 'io-ts'
-import { pipe, constant, flow } from 'fp-ts/function'
-import { Container, UnparsedContainerV } from './Container'
+import * as RA from 'fp-ts/ReadonlyArray'
+import * as AP from 'fp-ts/Apply'
+import * as F from 'fp-ts/function'
 import { Lens } from 'monocle-ts'
-import { upsertAt } from 'fp-ts/Record'
-import { Emoji } from './Emoji'
+import { EmojiDomainError, parseEmoji, Emoji } from './Emoji'
 import { iso, Newtype } from 'newtype-ts'
 import { isLongerThan, isShorterThan } from '../utils/String'
 
@@ -12,27 +12,27 @@ import { isLongerThan, isShorterThan } from '../utils/String'
 export interface FolderName extends Newtype<{ readonly FolderName: unique symbol }, string> {}
 /* eslint-enable functional/prefer-type-literal */
 
-export const isoFolderName = iso<FolderName>()
+const isoFolderName = iso<FolderName>()
 
-type FolderDomainErrors
+export type FolderDomainErrors
   = 'FolderNameTooLong'
   | 'FolderNameTooShort'
 
-type FolderDomainError
+export type FolderDomainError
   = { readonly tag: 'FolderDomainError', readonly reason: FolderDomainErrors }
 
 export type Folder = {
   readonly id: string
   readonly emoji: Emoji
   readonly name: FolderName
-  readonly containers: Record<string, Container>
+  readonly containers: readonly string[]
 }
 
 export const UnparsedFolderV = t.type({
   id: t.string,
   emoji: t.string,
   name: t.string,
-  containers: t.record(t.string, UnparsedContainerV)
+  containers: t.array(t.string)
 })
 
 export type UnparsedFolder = t.TypeOf<typeof UnparsedFolderV>
@@ -44,16 +44,23 @@ const constructFolderDomainError = (r: FolderDomainErrors): FolderDomainError =>
   reason: r
 })
 
-const parseFolderName: (f: string) => E.Either<FolderDomainError, FolderName> = flow(
+export const parseFolderName: (f: string) => E.Either<FolderDomainError, FolderName> = F.flow(
   E.fromPredicate(
     isLongerThan(1),
-    pipe('FolderNameTooShort', constructFolderDomainError, constant)
+    F.pipe('FolderNameTooShort', constructFolderDomainError, F.constant)
   ),
   E.chain(E.fromPredicate(
     isShorterThan(20),
-    pipe('FolderNameTooShort', constructFolderDomainError, constant)
+    F.pipe('FolderNameTooShort', constructFolderDomainError, F.constant)
   )),
   E.map(isoFolderName.wrap)
 )
 
-export const addContainer = (c: Container) => containersL.modify(upsertAt(c.id, c))
+export const parseFolder = (f: UnparsedFolder): E.Either<FolderDomainError | EmojiDomainError, Folder> => AP.sequenceS(E.Applicative)({
+  id: E.right(f.id),
+  name: parseFolderName(f.name),
+  emoji: F.pipe(f.emoji, parseEmoji, E.fromOption(F.constant({ tag: 'EmojiDomainError', reason: 'NotEmoji' }))),
+  containers: E.right(f.containers)
+})
+
+export const addContainer = (id: string) => containersL.modify(RA.append(id))
