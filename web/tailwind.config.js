@@ -65,6 +65,7 @@ function buildShadowPalette (theme) {
 }
 
 module.exports = {
+  mode: 'jit',
   purge: [
     './src/**/*.html',
     './src/**/*.tsx'
