@@ -1,0 +1,19 @@
+{
+  "transforms": [
+    {
+      "mode": "ts",
+      "include": "repositories/sql/**/*.ts",
+      "emitTemplate": "{{dir}}/{{name}}.types.ts"
+    }
+  ],
+  "srcDir": "./lib/",
+  "failOnError": false,
+  "camelCaseColumnNames": false,
+  "db": {
+    "dbName": "afazeres-dev",
+    "user": "postgres",
+    "password": "postgres",
+    "host": "localhost",
+    "port": 5432
+  }
+}

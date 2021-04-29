@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "serve": "ts-node ./lib/index.ts",
-    "test": "jest ./spec"
+    "test": "jest ./spec",
+    "watch:types": "npx pgtyped -w -c pgtyped.json"
   },
   "author": "",
   "license": "ISC",
